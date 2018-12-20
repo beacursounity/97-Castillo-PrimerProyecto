@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_GameAssets/Escenas/Portada.unity
+    guid: 18dca2bf94a64de4194ac45fc44cf35e
+  - enabled: 1
+    path: Assets/_GameAssets/Escenas/Castillo.unity
+    guid: e7e0346dc4498944c9086141459c29d2
