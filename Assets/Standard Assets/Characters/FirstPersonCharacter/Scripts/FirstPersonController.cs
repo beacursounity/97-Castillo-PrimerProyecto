@@ -57,6 +57,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			m_MouseLook.Init(transform , m_Camera.transform);
         }
 
+        public void CambiarSensibilidadRaton(float X, float Y){
+            m_MouseLook.XSensitivity = X;
+            m_MouseLook.YSensitivity = Y;
+         }
 
         // Update is called once per frame
         private void Update()

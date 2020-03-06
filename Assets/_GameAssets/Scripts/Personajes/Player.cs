@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using  UnityStandardAssets.Characters.FirstPerson;
+
 
 public class Player : MonoBehaviour {
 
@@ -23,9 +26,14 @@ public class Player : MonoBehaviour {
     [Header("REFERENCIAS")]
     [SerializeField] GameObject enemigo;
 
-    [Header("REFERENCIAS DEL TEXTO")]
-    [SerializeField] TextMesh tm;
+    [Header("REFERENCIAS DEL TEXTO")]  // Lo voy a cambiar para ponerlo sobre la Escena
+    [SerializeField] TextMesh tm;       // YA NO LAS USO
     [SerializeField] TextMesh numeroEnemigos;
+
+    [Header("REFERENCIAS DEL TEXTO NUEVO")]  // Lo voy a cambiar para ponerlo sobre la Escena
+    [SerializeField] Text tmNuevo;
+    [SerializeField] Text numeroEnemigosNuevo;
+
 
     //[Header("SANGRE DEL PLAYER")]
     //[SerializeField] GameObject sangre;
@@ -40,6 +48,8 @@ public class Player : MonoBehaviour {
     // cojo referencia script
     [SerializeField] HUDScript hs;
 
+   FirstPersonController controller;
+
     //Incrementar la Vida del personaje
     public void Start() {
 
@@ -48,6 +58,12 @@ public class Player : MonoBehaviour {
 
         // HACEMOS LA LLAMADA A LA 0 PARA QUE ME ACTIVE EL ARMA 0
         ActivarArma(armaActiva);
+        
+        // PARA CONTROLAR LA SENSIBILIDAD DEL RATON A LA HORA DE DISPARAR
+        //controller = GetComponent<FirstPersonController>();   
+        //controller.CambiarSensibilidadRaton(1,1);     
+        
+      
     }
 
 
@@ -56,8 +72,9 @@ public class Player : MonoBehaviour {
         if (estaVivo) {
 
             // ACTUALIZAMOS LAS VIDAS
-            tm.text = " " + vidaActual; // LE PONEMOS "" PARA QUE LO TRANFORME A TEXTO
-            numeroEnemigos.text = "Enemigos: " + Enemigo.numEnemigos;
+            tmNuevo.text = "Vidas: " + vidaActual; // LE PONEMOS "" PARA QUE LO TRANFORME A TEXTO
+            //numeroEnemigos.text = "Enemigos: " + Enemigo.numEnemigos;
+            numeroEnemigosNuevo.text = "Enemigos: " + Enemigo.numEnemigos;
 
             // DEPENDIENDO QUE TECLA PULSE ACTIVAREMOS UN ARMA U OTRA
             Debug.Log("Player municion: " + municionActual);
@@ -88,7 +105,7 @@ public class Player : MonoBehaviour {
     private void ActivarArma(int armaActiva) {
         DesactivarArmas();
         armas[armaActiva].gameObject.SetActive(true);
-    }
+    } 
 
     // DESACTIVAMOS TODAS LAS ARMAS
     private void DesactivarArmas() {
@@ -174,7 +191,16 @@ public class Player : MonoBehaviour {
             } else {
                 disparo = true;
             }
-        } else {
+        }
+        else if (armaActiva == 2){ // bomba nueva forma de disparar.
+            // VAMOS A COGER EL ARMA ACTIVA Y APRETAMOS EL GATILLO
+            armas[armaActiva].ApretarGatilloBomba();
+            // POR SI ME CAMBIA AL ARCO INICIALIZO LA VARIABLE
+            disparo = false;
+            //  QUITAMOS UNA BALA 
+            municionActual = municionActual - 1;
+        } 
+        else {
             // VAMOS A COGER EL ARMA ACTIVA Y APRETAMOS EL GATILLO
             armas[armaActiva].ApretarGatillo();
             // POR SI ME CAMBIA AL ARCO INICIALIZO LA VARIABLE

@@ -17,7 +17,7 @@ public class GeneradorEnemigos : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Debug.Log("NUM.MAX.ENEMIGOS "+numEnemigosMaximo);
+       // Debug.Log("NUM.MAX.ENEMIGOS "+numEnemigosMaximo);
         InvokeRepeating("GenerateEnemigo", 2, ratioGeneracionEnemigo);
     }
 

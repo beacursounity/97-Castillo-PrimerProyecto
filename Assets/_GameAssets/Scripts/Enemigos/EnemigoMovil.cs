@@ -63,14 +63,14 @@ public class EnemigoMovil : Enemigo {
 
         // METODO QUE ROTE ALEATORIAMENTE
         RotarAleatoriamente();
-        Debug.Log("ANTES DE ENTRAR EN COLISION");
+        //Debug.Log("colisiono con....." +collision.gameObject.name);
 
         // PARA SABER EL NOMBRE CON QUIEN NO HEMOS CHOCADO
         // SI ES PLAYER LO DESTRUIMOS 
         if (collision.gameObject.name == "Player") {
             //estaVivo = false;
-
-            Debug.Log("HA COLISIONADO CONTRA EL PLAYER");
+        
+           // Debug.Log("HA COLISIONADO CONTRA EL PLAYER");
             collision.gameObject.GetComponent<Player>().Recibirdanyo(danyoAlPlayer);
             Morir();
 
@@ -107,5 +107,9 @@ public class EnemigoMovil : Enemigo {
 
 
         }
+       }
+        // no me funciona mirarlo mas despacio
+       private void OnParticleCollision(GameObject other) {
+           print("ha colisionado con las particulas "+ other.gameObject.name);
        }
     }
