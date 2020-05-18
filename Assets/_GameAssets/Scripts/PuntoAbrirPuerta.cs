@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PuntoAbrirPuerta : MonoBehaviour {
-    GameObject puertaDcha;
-    private void Awake() {
-        puertaDcha = GameObject.Find("Door_TorreDcha");
+    [SerializeField] GameObject puertaDcha;
+
+    Animator miAnimatorPuerta;
+    void Star() {
+        print("Awake PuntoAbrirPuerta");
+        miAnimatorPuerta = puertaDcha.GetComponent<Animator>();
+        miAnimatorPuerta.SetBool("Abierta",false);
     }
-    private void OnTriggerEnter(Collider other) {
-        Debug.Log("BANDERA ONTRIGGERENTER");
+    void OnTriggerEnter(Collider other) {
+        print("BANDERA ONTRIGGERENTER");
         if (other.gameObject.name == "Player") {
-            Debug.Log("llamada a la funcion AbrirPuerta");
-            puertaDcha.GetComponent<Puerta>().AbrirPuerta();
+            //Debug.Log("llamada a la funcion AbrirPuerta");
+            //puertaDcha.GetComponent<Puerta>().AbrirPuerta();
+            miAnimatorPuerta.SetBool("Abierta",true);
         }
     }
 }
