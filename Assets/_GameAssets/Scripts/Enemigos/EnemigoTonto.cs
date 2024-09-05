@@ -2,16 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemigoTonto : EnemigoMovil {
-
-    //
-    /*[Header("Enemigo Movil")]
-    [SerializeField] int inicioRotacion = 1;
-    [SerializeField] int tiempoRotacion = 2;
-    */
-
-    
-   
+public class EnemigoTonto : EnemigoMovil {  
 
     // Use this for initialization
     void Start () {

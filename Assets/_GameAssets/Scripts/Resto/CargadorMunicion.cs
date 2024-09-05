@@ -31,14 +31,14 @@ public class CargadorMunicion : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
           
         GameObject colisionador = collision.gameObject;
-        Debug.Log("NOMBRE COLISIONARDOR "+ colisionador.name);
-
+   
         if (colisionador.name == "Player") {
             Debug.Log("INCREMENTAMOS LA MUNICION");
 
             Player player = colisionador.GetComponent<Player>();
             // SI LA MUNICION ACTUAL ES < 100 ME DEJA COGER LA MUNICION
             Debug.Log("Municion " + player.municionActual);
+
             if (player.municionActual < 100) { 
                 player.IncrementarMunicion(municion);
 

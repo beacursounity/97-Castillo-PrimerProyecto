@@ -22,18 +22,19 @@ public class Player : MonoBehaviour {
     // VARIABLE PARA SABER QUE ARMA TENGO ACTIVA,
     [SerializeField] int armaActiva = 0;
     [SerializeField] Arma[] armas = new Arma[NUM_ARMAS];
+    bool esconderArma = true;
 
     [Header("REFERENCIAS")]
     [SerializeField] GameObject enemigo;
 
-    [Header("REFERENCIAS DEL TEXTO")]  // Lo voy a cambiar para ponerlo sobre la Escena
-    [SerializeField] TextMesh tm;       // YA NO LAS USO
-    [SerializeField] TextMesh numeroEnemigos;
+    [Header("REFERENCIAS DEL TEXTO")]
+    [SerializeField] Text vidas;
+    [SerializeField] Text numeroEnemigos;
 
-    [Header("REFERENCIAS DEL TEXTO NUEVO")]  // Lo voy a cambiar para ponerlo sobre la Escena
-    [SerializeField] Text tmNuevo;
-    [SerializeField] Text numeroEnemigosNuevo;
-
+    [Header("SANGRE")]  
+    [SerializeField] Image sangre;
+    float r,g, b, a, colorAlphaInicial;
+ 
 
     //[Header("SANGRE DEL PLAYER")]
     //[SerializeField] GameObject sangre;
@@ -42,28 +43,47 @@ public class Player : MonoBehaviour {
     bool disparo = true;
 
     [Header("MUNICION")]
-    [SerializeField] public int municionActual = 100;
+    public int municionActual = 100;
     [SerializeField] int municionMaxima = 100;
 
     // cojo referencia script
     [SerializeField] HUDScript hs;
 
-   FirstPersonController controller;
+    //FirstPersonController controller;
+
+    [Header("SONIDO GRITO")]
+    SoundManager soundManager;
+
+
+
+    private void Awake()
+    {
+        // BUSCAMOS NUESTRO GO QUE CONTIENE TODOS LOS SONIDOS
+        soundManager = FindObjectOfType<SoundManager>();    
+    }
 
     //Incrementar la Vida del personaje
     public void Start() {
+      
+        //RECOGER LOS COLORES DEL CANVAS SANGRE
+        r = sangre.color.r;
+        g = sangre.color.g;
+        b = sangre.color.b;
+        a = sangre.color.a;
+        colorAlphaInicial = sangre.color.a;
 
-        // RECOJO EL QUAD SANGRE Y LO MUESTRO
-        //GameObject sangre = GameObject.Find("Sangre");
 
         // HACEMOS LA LLAMADA A LA 0 PARA QUE ME ACTIVE EL ARMA 0
         ActivarArma(armaActiva);
-        
+
+        // ESCONDEMOS LAS ARMAS
+        armas[armaActiva].gameObject.SetActive(false);
+
         // PARA CONTROLAR LA SENSIBILIDAD DEL RATON A LA HORA DE DISPARAR
         //controller = GetComponent<FirstPersonController>();   
         //controller.CambiarSensibilidadRaton(1,1);     
-        
-      
+
+
     }
 
 
@@ -72,30 +92,54 @@ public class Player : MonoBehaviour {
         if (estaVivo) {
 
             // ACTUALIZAMOS LAS VIDAS
-            tmNuevo.text = "Vidas: " + vidaActual; // LE PONEMOS "" PARA QUE LO TRANFORME A TEXTO
-            //numeroEnemigos.text = "Enemigos: " + Enemigo.numEnemigos;
-            numeroEnemigosNuevo.text = "Enemigos: " + Enemigo.numEnemigos;
+            vidas.text = "Vidas: " + vidaActual; // LE PONEMOS "" PARA QUE LO TRANFORME A TEXTO
+            // ACTUALIZAMOS LOS ENEMIGOS
+            numeroEnemigos.text = "Enemigos: " + Enemigo.numEnemigos;
 
             // DEPENDIENDO QUE TECLA PULSE ACTIVAREMOS UN ARMA U OTRA
-            Debug.Log("Player municion: " + municionActual);
+            //Debug.Log("Player municion: " + municionActual);
 
-            if (Input.GetMouseButtonDown(0) && municionActual > 0) { // boton izquierdo del raton
-                Disparar();
-            } else if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                armaActiva = 0;
-                ActivarArma(armaActiva);
-                hs.ActivarArma(0); // OTRA FORMA DE HACERLO
-            } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                armaActiva = 1;
-                ActivarArma(armaActiva);
-                hs.ActivarArma(1);// OTRA FORMA DE HACERLO
-            } else if (Input.GetKeyDown(KeyCode.Alpha3)) {
-                armaActiva = 2;
-                ActivarArma(armaActiva);
-                hs.ActivarArma(2);// OTRA FORMA DE HACERLO
-            } else if (Input.GetKeyDown(KeyCode.Alpha4)) {
-                armaActiva = 3;
-                ActivarArma(armaActiva);
+            // SI DOY A LA "A" MUESTRO O ESCONDO EL ARMA
+            if (Input.GetKeyDown(KeyCode.Q)) 
+            {
+                esconderArma = !esconderArma;
+
+                if (esconderArma) DesactivarArmas();
+                else
+                {
+                    ActivarArma(armaActiva);
+                }
+             
+            }
+
+           if (!esconderArma) {
+                if (Input.GetMouseButtonDown(0) && municionActual > 0)
+                { // boton izquierdo del raton
+                    Disparar();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    armaActiva = 0;
+                    ActivarArma(armaActiva);
+                    hs.ActivarArma(0); // OTRA FORMA DE HACERLO
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    armaActiva = 1;
+                    ActivarArma(armaActiva);
+                    hs.ActivarArma(1);// OTRA FORMA DE HACERLO
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    armaActiva = 2;
+                    ActivarArma(armaActiva);
+                    hs.ActivarArma(2);// OTRA FORMA DE HACERLO
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    armaActiva = 3;
+                    ActivarArma(armaActiva);
+                }
             }
         }
     }
@@ -135,15 +179,57 @@ public class Player : MonoBehaviour {
 
     // El enemigo reciben un daño
     public void Recibirdanyo(int danyo) {
+        
         // Restamos la vida 
         vidaActual = vidaActual - danyo;
 
+        // MANDAMOS LA POSICION DEL ARRAY QUE QUIERO REPRODUCIR Y EL VOLUMEN DEL SONIDO
+        soundManager.SeleccionAudio(0, 0.5f);
+
+        // MUESTRA LA SANGRE DEL PLAYER
+        StartCoroutine("MostrarSangre");
+
+        
         // vida si es 0 se tiene que morir el jugador
         if (vidaActual <= 0) {
             vidaActual = 0;
             Morir();
         }
+     
     }
+
+    IEnumerator MostrarSangre()
+    {
+        // MOSTRAR LA SANGRE POCO A POCO
+        for (int i = 1; i < 60; i++)
+        {
+            
+            a += 0.01f;
+            // CAMBIAR COLOR
+            CambiarColorSangre();
+
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        // VOLVEMOS A DEJAR TRANSPARENTE LA SANGRE POCO A POCO
+        for (int i = 60; i > 1; i--)
+        {
+
+            a -= 0.01f;
+            // CAMBIAR COLOR
+            CambiarColorSangre();
+
+            yield return new WaitForSeconds(0.01f);
+        }
+
+
+        // LO PONEMOS MENOR QUE LO ANTERIOR PARA QUE DESAPAREZCA LA IMAGEN DE LA SANGRE
+        //a -= 0.001f;
+        // TIENE QUE ESTAR ENTRE LOS VALORES DADOS 0 Y 1.
+        // SI ES MENOR QUE 0 DARA 0 Y SI ES MAYOR QUE 1 DA 1
+        //a = Mathf.Clamp(a, 0, 1f);
+    }
+
 
     /*private void OnMouseDown() {
         Debug.Log("PULSADO CON EL RATON PLAYER");
@@ -157,15 +243,9 @@ public class Player : MonoBehaviour {
         Debug.Log("HE MUERTO");
         estaVivo = false;
 
-        // RECOJO LA SANGRE Y LLAMO A LAS PARTICULAS DE SANGRE
-        GameObject sangre = GameObject.Find("Sangre");
-        //Debug.Log("Recojo Nombre sangre " + sangre.name);
-        sangre.GetComponent<ParticleSystem>().Play();
-
-
         // ESPERO UN POCO PARA QUE SE VEA LA SANGRE Y SE DESTRUYA
         // EL PLAYER
-        Invoke("Destruir", 3);
+        Invoke("Destruir", 2);
 
     }
 
@@ -208,6 +288,13 @@ public class Player : MonoBehaviour {
             //  QUITAMOS UNA BALA 
             municionActual = municionActual - 1;
         }
+    }
+
+    void CambiarColorSangre()
+    {
+        Color c = new Color(r, g, b, a);
+        sangre.color = c;
+
     }
 
 }

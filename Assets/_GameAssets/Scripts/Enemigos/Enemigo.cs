@@ -6,12 +6,20 @@ using UnityEngine.SceneManagement;
 // ESTAMOS HACIENDO EL ENEMIGO BASE
 public class Enemigo : MonoBehaviour {
 
+    //PROTECTED PARA PODERLAS VER EN EL HIJOm
+
     [Header("ESTADO")]
     [SerializeField] protected bool estaVivo = true;
-    [SerializeField] int vida = 10;
-    [SerializeField] bool enPosicion = false;
 
-    [SerializeField] protected int velocidad = 10;
+    [Header("VIDAS")]
+    protected float maxVidaETonto, maxVidaEListo, maxVidaEEstatico, maxVidaEBoss;
+    [SerializeField] float vidaEnemigoTonto;
+    [SerializeField] float vidaEnemigoListo;
+    public float vidaEnemigoEstatico;
+    [SerializeField] float vidaEnemigoBoss;
+    //[SerializeField] bool enPosicion = false;
+
+    [SerializeField] protected int velocidad = 10; // DEL MOVIMIENTO DEL ENEMIGO MOVIL
 
     [Header("ATAQUE")]
     [SerializeField] protected int distanciaDeteccion; // PARA EL ENEMIGO QUE SE MUEVE
@@ -27,7 +35,7 @@ public class Enemigo : MonoBehaviour {
 
     [Header("FX")]
     [SerializeField] protected ParticleSystem explosion;
-    
+
 
     [Header("NUMERO ENEMIGOS")]
     // NUMERO DE ENEMIGOS QUE TENGO EN LA ESCENA HABRA QUE MODIFICARLO CUANDO ESTE TERMINADO
@@ -40,11 +48,26 @@ public class Enemigo : MonoBehaviour {
     //int distanciaExplosion; // 
     // LE HACEMOS DAÑO AL ENEMIGO Y NO SE REGENERA
 
+    [Header("SONIDOS ENEMIGOS")]
+    SoundManager soundManager;
+
+    [Header("MUERTE TORRE")]
+   public AnimatorOverrideController amimacionTorreMuerte;
+
+    [Header("SLIDER VIDAS ENEMIGOS")]
+    private BarraVida barraVida;
+
     private void Awake() {
         // LO COGEMOS ASI PORQUE EL PLAYER ES UN PREFAB Y ASI COGERA MEJOR
         // LA REFERENCIA.
         player = GameObject.Find("Player");
-        
+
+        // BUSCAMOS NUESTRO GO QUE CONTIENE TODOS LOS SONIDOS
+        soundManager = FindObjectOfType<SoundManager>();
+
+        // RECOGEMOS EL COMPONENTE DE LA BARRAVIDA
+        barraVida = GetComponentInChildren<BarraVida>();
+
     }
 
   
@@ -71,19 +94,18 @@ public class Enemigo : MonoBehaviour {
         5.¿Aumentar salud? ¿Incremetar puntuacion? ¿Recompensas?....
         */
         // LANZAMOS LA EXPLOSION
-        // LO HEMOS PUESTO EL PS INDEPENDIENTEMENTE PARA PODER HACER EL DESTUIR Y QUE NO SE
+        // LO HEMOS PUESTO EL PS INDEPENDIENTEMENTE PARA PODER HACER EL DESTRUIR Y QUE NO SE
         // DESTRUYAN LAS BALAS
         explosion = Instantiate(explosion, transform.position, Quaternion.identity);
         // ESTADOVIVO A FALSE
         estaVivo = false;
         // EXPLOSION
-        explosion.Play();
+        explosion.Play();   
 
 
         // QUITAMOS EL NUMERO ENEMIGOS PARA QUE APAREZCA EL BOSS CUANDO
         // YA NO TENGAMOS ENEMIGOS
         if (numEnemigos > 0) {
-            Debug.Log("ENEMIGO MUERE. ME QUEDAN " + numEnemigos);
             numEnemigos = numEnemigos - 1;
         }
 
@@ -104,19 +126,76 @@ public class Enemigo : MonoBehaviour {
 
     // Todos los enemigos reciben un daño
     // EL DAÑO LO DA EL ARMA QUE TENDREMOS QUE DECIDIRLO NOSOTROS
-    public void Recibirdanyo(int danyo) 
+    public void Recibirdanyo(string tipoEnemigo, int danyo) 
      {
-        //Debug.Log("Recibir daño");
+        //print("vida antes " + vida);
+         Debug.Log("Recibir daño "+ danyo);
+
         // Restamos la vida 
-        vida = vida - danyo;
-        // vida si es 0 se tiene que morir los enemigos
-        if (vida <= 0) 
+        if ( tipoEnemigo == "EnemigoListo")
         {
-            vida = 0;
-            Morir();
+            vidaEnemigoListo = vidaEnemigoListo - danyo;
+            if (vidaEnemigoListo <= 0)
+            {
+                vidaEnemigoListo = 0;
+                Morir();
+            }
         }
-        
+        else if (tipoEnemigo == "EnemigoTonto")
+        {
+            print("vida Estatico antes " + vidaEnemigoEstatico); //PROBARLO
+            vidaEnemigoTonto = vidaEnemigoTonto- danyo;
+            print("vida Estatico despues " + vidaEnemigoEstatico);
+            if (vidaEnemigoTonto <= 0)
+            {
+                vidaEnemigoTonto = 0;
+                Morir();
+            }
+        }
+        else if (tipoEnemigo == "EnemigoEstatico")
+        {
+          
+            vidaEnemigoEstatico = vidaEnemigoEstatico - danyo;
+
+            print("Max " + maxVidaEEstatico + " vida "+vidaEnemigoEstatico);
+
+            // ACTUALIZAMOS EL SLIDER
+            barraVida.ActualizarBarraVida(vidaEnemigoEstatico, maxVidaEEstatico);
+
+            // MANDAMOS LA POSICION DEL ARRAY QUE QUIERO REPRODUCIR Y EL VOLUMEN DEL SONIDO
+            soundManager.SeleccionAudio(1, 0.5f);
+
+            if (vidaEnemigoEstatico <= 0)
+            {
+                // METODO QUE ESTA EN EL SCRIPT DE ENEMIGO
+                MuerteEnemigoEstatico();
+
+                vidaEnemigoEstatico = 0;
+                
+               
+            }
+        }
+        else if (tipoEnemigo == "EnemigoBoss")
+        {
+            vidaEnemigoBoss = vidaEnemigoBoss - danyo;
+            if (vidaEnemigoBoss <= 0)
+            {
+                vidaEnemigoBoss = 0;
+                Morir();
+            }
+        }
+
+
     }
+
+    protected virtual void MuerteEnemigoEstatico()
+    {
+        print("2");
+        // CAMBIO LA ANIMACION DE LA TORRETA PARA QUE SE VEA QUE SE HA MUERTO
+        //animacionTorreTop.SetBool("Muerte", true);
+        //Morir();
+    }
+
 
     /*protected void Destruir()
     {

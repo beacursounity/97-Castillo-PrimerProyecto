@@ -9,6 +9,8 @@ TagManager:
   - EnemigoEstatico
   - EnemigoBoss
   - Sangre
+  - EnemigoListo
+  - EnemigoTonto
   layers:
   - Default
   - TransparentFX

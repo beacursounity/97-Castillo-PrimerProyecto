@@ -16,6 +16,7 @@ public class Arma : MonoBehaviour {
     [SerializeField] AudioSource audioBalaTorreta;
     //[SerializeField] ParticleSystem particulasDisparo;
 
+    [Header("ARMA CARGADOR FRONTAL/BOMBAS")]
     // NUEVAS VARIABLES PARA HACER OTRO TIPO DE DISPARO PARA LA BOMBA
     public int contadorBombas = 30;
     public float tiempoVida = 30f; // 30 segundos
@@ -58,17 +59,18 @@ public class Arma : MonoBehaviour {
     // UNA ROTACION DISTINTA
     public void ApretarGatilloBomba()
     {
+
        // CON PARTICULAS QUE NO CONSUMIRA TANTA MEMORIA
        // particulasBombas.Play(); 
        // CON INSTANTIATES CONSUMIRA MAS MEMORIA
         for ( int i = 0; i < contadorBombas ; i++ ) 
         {
             bombas[i] = Random.rotation;
-            //print("Bombas "+ bombas[i]);
+           
             GameObject nuevaBala = Instantiate(prefabBala, puntoGeneracion.transform.position, puntoGeneracion.transform.rotation);
-            // DESTRUIMOS LAS BALAS AL CAMBO DE 30 SG
+            // DESTRUIMOS LAS BOMBAS AL CAMBO DE 30 SG
             Destroy (nuevaBala, tiempoVida);
-            // A CADA BALA LE DAMOS UN GIRO DISTINTO 
+            // A CADA BOMBA LE DAMOS UN GIRO DISTINTO 
             nuevaBala.transform.rotation = Quaternion.RotateTowards(nuevaBala.transform.rotation,
                     bombas[i], esparcir);
             nuevaBala.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * potenciaDisparo);
@@ -78,10 +80,4 @@ public class Arma : MonoBehaviour {
 
     }
     
-
-
-    // Update is called once per frame
-    void Update () {
-		
-	}
 }

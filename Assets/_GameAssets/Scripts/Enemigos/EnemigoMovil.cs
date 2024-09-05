@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,10 +34,12 @@ public class EnemigoMovil : Enemigo {
 
  
     protected void RotarAleatoriamente() {
-        // LE VAMOS HACER UN EJE DE ROTACION ALEATORIO enter 0 y 360
-        float rotacion = Random.Range(0f, 360F);
-        // VAMOS A ROTAR SOBRE EL EJE DE LA Y 
-        transform.eulerAngles = new Vector3(0, rotacion, 0);
+       // LE VAMOS HACER UN EJE DE ROTACION ALEATORIO enter 0 y 360
+       float rotacion = Random.Range(0f, 360F);
+
+       // VAMOS A ROTAR SOBRE EL EJE DE LA Y 
+       transform.eulerAngles = new Vector3(0, rotacion, 0);
+        
     }
 
     // METODO AVANZAR COMUN PARA TODOS LOS ENEMIGOS
@@ -59,19 +60,21 @@ public class EnemigoMovil : Enemigo {
     }
 
     private void OnCollisionEnter(Collision collision) {
-        //Debug.Log("ha entrado");
 
         // METODO QUE ROTE ALEATORIAMENTE
         RotarAleatoriamente();
-        //Debug.Log("colisiono con....." +collision.gameObject.name);
 
         // PARA SABER EL NOMBRE CON QUIEN NO HEMOS CHOCADO
         // SI ES PLAYER LO DESTRUIMOS 
-        if (collision.gameObject.name == "Player") {
+        if (collision.gameObject.name == "Player")
+        {
+            print("ha chocado");
             //estaVivo = false;
-        
-           // Debug.Log("HA COLISIONADO CONTRA EL PLAYER");
+
+            // Debug.Log("HA COLISIONADO CONTRA EL PLAYER");
             collision.gameObject.GetComponent<Player>().Recibirdanyo(danyoAlPlayer);
+
+            //
             Morir();
 
             // RECOGEMOS SU COMPONENTE PLAYER Y ASI PODREMOS LLAMAR A RECIBIRDANYO
@@ -107,9 +110,10 @@ public class EnemigoMovil : Enemigo {
 
 
         }
+    
        }
-        // no me funciona mirarlo mas despacio
-       private void OnParticleCollision(GameObject other) {
+    // no me funciona mirarlo mas despacio
+    private void OnParticleCollision(GameObject other) {
            print("ha colisionado con las particulas "+ other.gameObject.name);
        }
     }

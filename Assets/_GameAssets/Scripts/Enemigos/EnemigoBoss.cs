@@ -71,7 +71,7 @@ public class EnemigoBoss : EnemigoMovil {
             // CUNSO CHOCA CON EL PLAYER, EL PLAYER LE HHACE UN DAÑO DE 1 MIENTRAS QUE EL
             // BOSS LE HARA UN DAÑO DE 8 AL PLAYER
             Debug.Log("QUITA VIDA AL BOSS: " + danyoAlBoss);
-            Recibirdanyo(danyoAlBoss);
+            Recibirdanyo("EnemigoBoss", danyoAlBoss);
 
   
            
@@ -101,7 +101,7 @@ public class EnemigoBoss : EnemigoMovil {
             // BOSS LE HARA UN DAÑO DE 8 AL PLAYER
             // HABRA QUE ACTIVARLO
           //  Debug.Log("QUITA VIDA AL BOSS: " + danyoAlBoss);
-            Recibirdanyo(danyoAlBoss);
+            Recibirdanyo("EnemigoBoss", danyoAlBoss);
 
 
 
