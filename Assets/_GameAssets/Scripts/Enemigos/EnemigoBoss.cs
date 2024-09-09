@@ -12,6 +12,7 @@ public class EnemigoBoss : EnemigoMovil {
         // EL BOSS HACE MAS DAÑO AL PLAYER
         danyoAlPlayer = 8; // que realiza a nuestro personaje
     }
+
     // Update is called once per frame
     void Update () {
         // ACTUALIZAMOS LAS VIDAS

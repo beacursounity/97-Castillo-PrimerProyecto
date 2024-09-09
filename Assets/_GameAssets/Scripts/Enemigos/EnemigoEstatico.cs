@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,44 +6,58 @@ public class EnemigoEstatico: Enemigo {
 
     [SerializeField] float distanciaAtaque = 10.0f;
 
+    [Header("DISPARO")]
     // HAY QUE RECOGER LA REFERENCIA DEL PUNTO DE GENERACION Y DE LA BALA
     [SerializeField] Transform puntoGeneracion; // MAS PRECISO EL TRANSFORM AUNQUE SE PUEDE PONER SU GO
     [SerializeField] GameObject prefabBala;
-
-    // RECOGEMOS EL AUDIO PARA QUE CUANDO DISPARE SE OIGA
-    [SerializeField] AudioSource audioTorreta;
-
     // POTENCIA DISPARO
     [SerializeField] int potenciaDisparo = 100;
-    float tiempoAtaque ;
+    float tiempoAtaque;
     float tiempoEntreDisparos = 2.0f;
+    // RECOGEMOS EL AUDIO PARA QUE CUANDO DISPARE SE OIGA
+    AudioSource audioTorreta;
 
+    // ANIMACION TORRE DESTRUIDA
     Animator animacionTorreTop;
 
 
     // Use this for initialization
     void Start () {
 
+        // SUMAMOS 1 AL ENEMIGO YA QUE EL RESTOS DE ENEMIGOS SE GENERAN A TRAVES DE UN GENERADOR DE ENEMIGO
+        // Y SE PASA POR PARAMETRO CUANDO ENEMIGOS SE CREAN
+        numEnemigos += 1;
+
         // RECOGEMOS LA VIDA MAXIMA PARA PODER HACER EL SLIDER
         maxVidaEEstatico = vidaEnemigoEstatico;
 
-        print("Vida estatico "+ maxVidaEEstatico);
+       // print("Vida estatico "+ maxVidaEEstatico);
 
-        //print(Time.deltaTime);
-        // RECOGO SU AUDIO PARA PODER REPRODUCIRLO
+        // RECOJO SU AUDIO PARA PODER REPRODUCIRLO
         audioTorreta = GetComponent<AudioSource>();
+        print("Nombre audio "+audioTorreta.clip.name);
+
         // LO INICIALIZAMOS ASI PARA QUE AL PRINCIPIO QUE SE ACERQUE DISPARE EL E.ESTATICO
         tiempoAtaque = tiempoEntreDisparos;
 
+        // RECOJO EL ANIMATOR QUE EN ESTE CASO NO TIENE NINGUN ANIMACION
+        // PERO LUEGO LO NECESITAMOS PARA HACER ANIMACION QUE SE DESTRUYA
         animacionTorreTop = GetComponent<Animator>();
      
 
     }
 
-    // Update is called once per frame
-    protected override void Update() {
+   /* // Update is called once per frame
+    protected override void Update()
+    {
+        base.Update(); 
+        //Resto de codigo
+    }*/
 
-          base.Update(); // LLAMAMOS AL PADRE Y PONEMOS OVERRRIDE EN EL HIJO Y VIRTUAL EN EL PADRE
+    // Update is called once per frame
+   void Update() {
+
+        //  base.Update(); // LLAMAMOS AL PADRE Y PONEMOS OVERRRIDE EN EL HIJO Y VIRTUAL EN EL PADRE
                            // ESTO NO HARIA FALTA YA QUE EN EL UPDATE PADRE NO TENGO NADA
 
           // SI EL PLAYER ESTA VIVO CONTINUA DISPARANDO LA TORRETA Y GIRANDO HACIA EL PLAYER
@@ -101,18 +115,16 @@ public class EnemigoEstatico: Enemigo {
 
     }
 
-    protected override void MuerteEnemigoEstatico(  )
+    protected override void MuerteEnemigoEstatico()
     { 
         // ACTIVO LA ANIMACION
         animacionTorreTop.runtimeAnimatorController = amimacionTorreMuerte;
 
         // QUITAMOS LA BARRA DE VIDA
-       // Canvas barraVida = FindObjectOfType<Canvas>().gameObject.SetActive(false);
-
-        // DESTRUYE EL SCRIPT
-        Destroy(this);
-    
-     
+        Canvas barraVida = this.GetComponentInChildren<Canvas>();
+           
+        // QUITAMOS EL CANVAS PARA QUE NO SE VEA LA BARRA DE VIDA
+        barraVida.enabled = false; 
       
     }
 

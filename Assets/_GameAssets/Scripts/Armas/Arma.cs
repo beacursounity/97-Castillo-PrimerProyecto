@@ -48,6 +48,9 @@ public class Arma : MonoBehaviour {
 
         // AUDIO DEL PROYECTIL
         audioBalaTorreta.Play();
+        
+      print("NO funciona SONIDO");
+
         // PARA HACER LA FUERZA CON RESPECTO AL MUNDO 
         nuevaBala.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * potenciaDisparo);
  

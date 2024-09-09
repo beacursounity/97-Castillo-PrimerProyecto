@@ -13,8 +13,8 @@ public class Enemigo : MonoBehaviour {
 
     [Header("VIDAS")]
     protected float maxVidaETonto, maxVidaEListo, maxVidaEEstatico, maxVidaEBoss;
-    [SerializeField] float vidaEnemigoTonto;
-    [SerializeField] float vidaEnemigoListo;
+    public float vidaEnemigoTonto;
+    public float vidaEnemigoListo;
     public float vidaEnemigoEstatico;
     [SerializeField] float vidaEnemigoBoss;
     //[SerializeField] bool enPosicion = false;
@@ -23,11 +23,12 @@ public class Enemigo : MonoBehaviour {
 
     [Header("ATAQUE")]
     [SerializeField] protected int distanciaDeteccion; // PARA EL ENEMIGO QUE SE MUEVE
-    [SerializeField] protected int danyoAlPlayer = 2; // que realiza a nuestro personaje 
+    [SerializeField] protected int danyoAlPlayer = 2;  // que realiza a nuestro Player
+    [SerializeField] protected int danyoAlEnemigo = 2; // que realiza el Player a nuestro al Enemigo 
+
 
     // Tenemos que tener nuestro personaje para saber la distancia pero respecto del player
     [Header("REFERENCIAS")]
-
     protected GameObject player; // PARA SABER DONDE ESTA SOLO NECESITO SU TRANSFORM
     protected GameObject enemigoBoss; // PARA SABER DONDE ESTA SOLO NECESITO SU TRANSFORM
 
@@ -51,11 +52,19 @@ public class Enemigo : MonoBehaviour {
     [Header("SONIDOS ENEMIGOS")]
     SoundManager soundManager;
 
-    [Header("MUERTE TORRE")]
-   public AnimatorOverrideController amimacionTorreMuerte;
+    [Header("ANIMACIONES MUERTE ENEMIGOS")]
+    public AnimatorOverrideController amimacionTorreMuerte;
+    public AnimatorOverrideController amimacionEnemigo;
+
 
     [Header("SLIDER VIDAS ENEMIGOS")]
     private BarraVida barraVida;
+
+    [Header("MUERTE ENEMIGOS")]
+    protected bool muerteEnemigoEstatico;
+
+
+    Animator animacionEnemigo;
 
     private void Awake() {
         // LO COGEMOS ASI PORQUE EL PLAYER ES UN PREFAB Y ASI COGERA MEJOR
@@ -65,17 +74,21 @@ public class Enemigo : MonoBehaviour {
         // BUSCAMOS NUESTRO GO QUE CONTIENE TODOS LOS SONIDOS
         soundManager = FindObjectOfType<SoundManager>();
 
-        // RECOGEMOS EL COMPONENTE DE LA BARRAVIDA
+        // RECOGEMOS EL COMPONENTE DE LA BARRAVIDA.CS PARA PODER LLAMAR A SUS METODOS
         barraVida = GetComponentInChildren<BarraVida>();
 
+
+        // RECOJO EL ANIMATOR QUE EN ESTE CASO NO TIENE NINGUN ANIMACION
+        // PERO LUEGO LO NECESITAMOS PARA HACER ANIMACION QUE SE DESTRUYA
+        animacionEnemigo = GetComponent<Animator>();
+
     }
 
   
-  
-    protected virtual void Update()
+    /*protected virtual void Update()
     {
-     //   vida = 100;
-    }
+       int vida = 100;
+    }*/
 
     // PARA RECOGER LA DISTACIA ENTRE EL PLAYER Y LA POSICION DEL TRANSFORM DEPENDIENDO
     // DESDE DONDE SE LLAME
@@ -83,87 +96,57 @@ public class Enemigo : MonoBehaviour {
         return player.transform.position - transform.position;
     }
 
-    // El Enemigo muere y ya esta
-    public void Morir() {
-        //Debug.Log("MURIENDO");
-        /*
-        1. Indicar que esta muerto 
-        2. Sistema de particulas
-        3. Gritos horibles de dolor / Despedirse de los seres queridos
-        4. Destruir el enemigo
-        5.¿Aumentar salud? ¿Incremetar puntuacion? ¿Recompensas?....
-        */
-        // LANZAMOS LA EXPLOSION
-        // LO HEMOS PUESTO EL PS INDEPENDIENTEMENTE PARA PODER HACER EL DESTRUIR Y QUE NO SE
-        // DESTRUYAN LAS BALAS
-        explosion = Instantiate(explosion, transform.position, Quaternion.identity);
-        // ESTADOVIVO A FALSE
-        estaVivo = false;
-        // EXPLOSION
-        explosion.Play();   
-
-
-        // QUITAMOS EL NUMERO ENEMIGOS PARA QUE APAREZCA EL BOSS CUANDO
-        // YA NO TENGAMOS ENEMIGOS
-        if (numEnemigos > 0) {
-            numEnemigos = numEnemigos - 1;
-        }
-
-        Destroy(this.gameObject);
-        
-
-        // CUANDO DESTRUYA AL ENEMIGO BOSS TENDREMOS QUE ACABAR LA PARTIDA O CUANDO
-        // SE MUERA EL PLAYER
-
-        // CUANDO NOS CARGUEMOS AL BOSS SE TERMINARA TB EL JUEGO
-        /*if (transform.tag == "EnemigoBoss") {
-            Debug.Log("ENEMIGO.MORIR: VAMOS A CARGARNOS A NUESTRO BOSS");
-            // LLAMAMOS A LA ESCENA DE INICIO DEL JUEGO
-            SceneManager.LoadScene(0);
-        }*/
-
-    }
-
-    // Todos los enemigos reciben un daño
+    // TODOS LOS ENEMIGOS RECIBEN UN DAÑO
     // EL DAÑO LO DA EL ARMA QUE TENDREMOS QUE DECIDIRLO NOSOTROS
-    public void Recibirdanyo(string tipoEnemigo, int danyo) 
-     {
-        //print("vida antes " + vida);
-         Debug.Log("Recibir daño "+ danyo);
+    public void Recibirdanyo(string tipoEnemigo, int danyo)
+    {
+     
+        Debug.Log("Recibir daño " + danyo);
 
-        // Restamos la vida 
-        if ( tipoEnemigo == "EnemigoListo")
+        // RESTAMOS VIDA, ACTUALIZAMOS BARRA DE VIDA, REPRODUCIMOS SONIDO
+        if (tipoEnemigo == "EnemigoListo")
         {
             vidaEnemigoListo = vidaEnemigoListo - danyo;
+
+            // ACTUALIZAMOS EL SLIDER
+            barraVida.ActualizarBarraVida(vidaEnemigoListo, maxVidaEListo);
+
+            // MANDAMOS LA POSICION DEL ARRAY QUE QUIERO REPRODUCIR Y EL VOLUMEN DEL SONIDO
+            soundManager.SeleccionAudio(2, 0.1f);
+
             if (vidaEnemigoListo <= 0)
             {
                 vidaEnemigoListo = 0;
                 Morir();
             }
         }
-        else if (tipoEnemigo == "EnemigoTonto")
+        else if (tipoEnemigo == "EnemigoTonto") // OK
         {
-            print("vida Estatico antes " + vidaEnemigoEstatico); //PROBARLO
-            vidaEnemigoTonto = vidaEnemigoTonto- danyo;
-            print("vida Estatico despues " + vidaEnemigoEstatico);
+           
+            vidaEnemigoTonto = vidaEnemigoTonto - danyo;
+
+            // ACTUALIZAMOS EL SLIDER
+            barraVida.ActualizarBarraVida(vidaEnemigoTonto, maxVidaETonto);
+
+            // MANDAMOS LA POSICION DEL ARRAY QUE QUIERO REPRODUCIR Y EL VOLUMEN DEL SONIDO
+            soundManager.SeleccionAudio(2, 0.1f);
+
             if (vidaEnemigoTonto <= 0)
             {
-                vidaEnemigoTonto = 0;
+                vidaEnemigoTonto = 0;       
                 Morir();
             }
         }
-        else if (tipoEnemigo == "EnemigoEstatico")
+        else if (tipoEnemigo == "EnemigoEstatico") //OK
         {
-          
-            vidaEnemigoEstatico = vidaEnemigoEstatico - danyo;
 
-            print("Max " + maxVidaEEstatico + " vida "+vidaEnemigoEstatico);
+            vidaEnemigoEstatico = vidaEnemigoEstatico - danyo;
 
             // ACTUALIZAMOS EL SLIDER
             barraVida.ActualizarBarraVida(vidaEnemigoEstatico, maxVidaEEstatico);
 
             // MANDAMOS LA POSICION DEL ARRAY QUE QUIERO REPRODUCIR Y EL VOLUMEN DEL SONIDO
-            soundManager.SeleccionAudio(1, 0.5f);
+            soundManager.SeleccionAudio(1, 0.1f);
 
             if (vidaEnemigoEstatico <= 0)
             {
@@ -171,8 +154,11 @@ public class Enemigo : MonoBehaviour {
                 MuerteEnemigoEstatico();
 
                 vidaEnemigoEstatico = 0;
-                
-               
+
+                // QUITAMOS EN NUMERO DE ENEMIGOS DEL CANVAS 
+                numEnemigos = numEnemigos - 1;
+
+
             }
         }
         else if (tipoEnemigo == "EnemigoBoss")
@@ -188,12 +174,65 @@ public class Enemigo : MonoBehaviour {
 
     }
 
+    // PARA TODOS LOS ENEMIGOS MUEREN EXCEPTO PARA EL ENEMIGO ESTATICO
+    public void Morir() {
+        //Debug.Log("MURIENDO");
+        /*
+        1. Indicar que esta muerto 
+        2. Sistema de particulas
+        3. Gritos horibles de dolor / Despedirse de los seres queridos
+        4. Destruir el enemigo
+        5.¿Aumentar salud? ¿Incremetar puntuacion? ¿Recompensas?....
+        */
+        // LANZAMOS LA EXPLOSION
+        // LO HEMOS PUESTO EL PS INDEPENDIENTEMENTE PARA PODER HACER EL DESTRUIR Y QUE NO SE
+        // DESTRUYAN LAS BALAS
+        explosion = Instantiate(explosion, transform.position, Quaternion.identity);
+
+        // ESTADOVIVO A FALSE
+        estaVivo = false;
+
+        // EXPLOSION
+        explosion.Play();
+
+        // ACTIVO LA ANIMACION DE MUERTE ENEMIGO
+        animacionEnemigo.runtimeAnimatorController = amimacionEnemigo;
+        print("animacion " + animacionEnemigo);
+
+        // QUITAMOS LA BARRA DE VIDA
+        Canvas barraVida = this.GetComponentInChildren<Canvas>();
+
+        // QUITAMOS EL CANVAS PARA QUE NO SE VEA LA BARRA DE VIDA
+        barraVida.enabled = false;
+
+        // QUITAMOS EL NUMERO ENEMIGOS PARA QUE APAREZCA EL BOSS CUANDO
+        // YA NO TENGAMOS ENEMIGOS
+        if (numEnemigos > 0) {
+            numEnemigos = numEnemigos - 1;
+        }
+
+        // QUITADO PARA PROBAR LA ANIMACION
+        //Destroy(this.gameObject);
+        
+
+        // CUANDO DESTRUYA AL ENEMIGO BOSS TENDREMOS QUE ACABAR LA PARTIDA O CUANDO
+        // SE MUERA EL PLAYER
+
+        // CUANDO NOS CARGUEMOS AL BOSS SE TERMINARA TB EL JUEGO
+        /*if (transform.tag == "EnemigoBoss") {
+            Debug.Log("ENEMIGO.MORIR: VAMOS A CARGARNOS A NUESTRO BOSS");
+            // LLAMAMOS A LA ESCENA DE INICIO DEL JUEGO
+            SceneManager.LoadScene(0);
+        }*/
+
+    }
+
+
+    // HE CREADO ESTE METODO PARA PODER CAMBIAR LA ANIMACION DE LA TORRETA
+    // EN EL HIJO ENEMIGOESTATICO.CS YA QUE LO LLAMO AL METODO DESDE AQUI
     protected virtual void MuerteEnemigoEstatico()
     {
-        print("2");
-        // CAMBIO LA ANIMACION DE LA TORRETA PARA QUE SE VEA QUE SE HA MUERTO
-        //animacionTorreTop.SetBool("Muerte", true);
-        //Morir();
+        // VACIO
     }
 
 

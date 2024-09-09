@@ -8,7 +8,7 @@ public class Proyectil : MonoBehaviour {
     [SerializeField] ParticleSystem particulasEnemigoEstatico;
     [SerializeField] ParticleSystem particulasRestoEnemigos;
 
-  
+    GameObject player;
 
     // El DAÑO DEPENDERA DE TIPO DE ARMA 5 MENOS DAÑO Y TENDRA MAS VIDAS Y
     // SI VAMOS BAJANDO HASTA 1 SERAN MAS DAÑO Y SE MORIRAN PORQUE TENDRA MENOS VIDAS
@@ -16,6 +16,13 @@ public class Proyectil : MonoBehaviour {
     // ESPADA = 2
     // CARGADOR FONTAL(BOMBA) = 4
     // ARMA CORTA = 3
+
+    private void Awake()
+    {
+        // LO COGEMOS ASI PORQUE EL PLAYER ES UN PREFAB Y ASI COGERA MEJOR
+        // LA REFERENCIA.
+        player = GameObject.Find("Player");
+    }
 
     private void Start() {
         
@@ -28,13 +35,12 @@ public class Proyectil : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         // RECOJO EL GAMEOBJECT QUE ES CON EL QUE COLISIONA LA BALA
         GameObject objetivoImpacto = other.gameObject;
-       
     
         // LOS BUSCAMOS POR SU TAG PARA SABER CONTRA QUIEN GOLPEO
-        if (objetivoImpacto.tag == "EnemigoListo" || objetivoImpacto.tag == "EnemigoTonto" ) {
+        if ( (objetivoImpacto.tag == "EnemigoListo" && objetivoImpacto.GetComponent<EnemigoListo>().vidaEnemigoListo > 0) ||
+             ( objetivoImpacto.tag == "EnemigoTonto"   &&  objetivoImpacto.GetComponent<EnemigoTonto>().vidaEnemigoTonto > 0) )
+        {           
 
-            //Debug.Log("HA COLISIONADO CON EL ENEMIGO");
-            //Debug.Log("DAÑO PROYECTIL "+danyoproyectil);
             // INSTANCIAMOS EL PREFAB
             particulasRestoEnemigos = Instantiate(particulasRestoEnemigos, transform.position, Quaternion.identity);
 
@@ -57,14 +63,21 @@ public class Proyectil : MonoBehaviour {
             // RECOGEMOS SU COMPONENTE PARA PODER QUITAR LA VIDA DEL ENEMIGO
             objetivoImpacto.GetComponent<EnemigoBoss>().Recibirdanyo(objetivoImpacto.tag, danyoproyectil);
     
-        } else if (objetivoImpacto.tag == "Player") {
+        }
+        else if (objetivoImpacto.tag == "Player")
+        {
 
             //Debug.Log("MATADO PLAYER");
             // RECOGEMOS SU COMPONENTE PARA PODER QUITAR LA VIDA DEL PLAYER 
             // PORQUE HA SIDO EL ENEMIGO ESTATICO QUE NOS HA TIRADO UN BOMBA
             objetivoImpacto.GetComponent<Player>().Recibirdanyo(danyoproyectil);
 
-        } else if (objetivoImpacto.tag == "EnemigoEstatico" ) {
+        }
+        // SI EL ENEMIGO ESTATICO NO ESTA MUERTO. YA QUE ESTE ENEMIGO NO DESAPARECE CONO EL RESTO
+        // Y DA ERROR SI YA NO TIENE VIDAS EL ESTATICO
+        else if (objetivoImpacto.tag == "EnemigoEstatico" &&
+                 objetivoImpacto.GetComponent<EnemigoEstatico>().vidaEnemigoEstatico > 0)
+        {
 
             // INSTANCIAMOS EL PREFAB
             particulasEnemigoEstatico = Instantiate(particulasEnemigoEstatico, transform.position, Quaternion.identity);

@@ -25,7 +25,7 @@ public class Player : MonoBehaviour {
     bool esconderArma = true;
 
     [Header("REFERENCIAS")]
-    [SerializeField] GameObject enemigo;
+    //[SerializeField] GameObject enemigo;
 
     [Header("REFERENCIAS DEL TEXTO")]
     [SerializeField] Text vidas;
@@ -40,21 +40,17 @@ public class Player : MonoBehaviour {
     //[SerializeField] GameObject sangre;
 
     //bool sangreActiva = false;
-    bool disparo = true;
 
     [Header("MUNICION")]
     public int municionActual = 100;
     [SerializeField] int municionMaxima = 100;
+    bool disparo = true; // PARA SABER SI DISPARO O NO
 
-    // cojo referencia script
+    // REFERENCIA DEL SCRIPT    
     [SerializeField] HUDScript hs;
-
-    //FirstPersonController controller;
 
     [Header("SONIDO GRITO")]
     SoundManager soundManager;
-
-
 
     private void Awake()
     {
@@ -184,7 +180,7 @@ public class Player : MonoBehaviour {
         vidaActual = vidaActual - danyo;
 
         // MANDAMOS LA POSICION DEL ARRAY QUE QUIERO REPRODUCIR Y EL VOLUMEN DEL SONIDO
-        soundManager.SeleccionAudio(0, 0.5f);
+        soundManager.SeleccionAudio(0, 2f);
 
         // MUESTRA LA SANGRE DEL PLAYER
         StartCoroutine("MostrarSangre");
@@ -198,6 +194,7 @@ public class Player : MonoBehaviour {
      
     }
 
+    // CUANDO EL ENEMIGO O LAS BALAS DE LA TORRETA LE TOQUE MOSTRAMOS LA SANGRE
     IEnumerator MostrarSangre()
     {
         // MOSTRAR LA SANGRE POCO A POCO

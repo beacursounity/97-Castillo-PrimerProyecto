@@ -133,10 +133,10 @@ MonoBehaviour:
   prefabBala: {fileID: 1568573334626596, guid: 9c1988fb83e3744408633c0fde1cc389, type: 3}
   potenciaDisparo: 100
   audioBalaTorreta: {fileID: 0}
-  contadorBombas: 10
-  tiempoVida: 30
-  velocidadDisparoBomba: 100
-  esparcir: 10
+  contadorBombas: 0
+  tiempoVida: 0
+  velocidadDisparoBomba: 0
+  esparcir: 0
 --- !u!82 &82926744407946796
 AudioSource:
   m_ObjectHideFlags: 0
@@ -335,10 +335,10 @@ MonoBehaviour:
   prefabBala: {fileID: 1385362940083642, guid: 63f7ec07e7d761940bb41d788cd54dd4, type: 3}
   potenciaDisparo: 100
   audioBalaTorreta: {fileID: 0}
-  contadorBombas: 10
-  tiempoVida: 30
-  velocidadDisparoBomba: 100
-  esparcir: 10
+  contadorBombas: 0
+  tiempoVida: 0
+  velocidadDisparoBomba: 0
+  esparcir: 0
 --- !u!82 &82703535147694064
 AudioSource:
   m_ObjectHideFlags: 0
@@ -537,10 +537,10 @@ MonoBehaviour:
   prefabBala: {fileID: 1086501668425116, guid: 1bd4707a2bbda3f4689c9df2a4d74e41, type: 3}
   potenciaDisparo: 300
   audioBalaTorreta: {fileID: 0}
-  contadorBombas: 10
-  tiempoVida: 30
-  velocidadDisparoBomba: 100
-  esparcir: 10
+  contadorBombas: 0
+  tiempoVida: 0
+  velocidadDisparoBomba: 0
+  esparcir: 0
 --- !u!82 &82105992781221702
 AudioSource:
   m_ObjectHideFlags: 0
@@ -863,7 +863,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: ab0838378520dfe45903a2c46c6d15d0, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5681,7 +5680,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.5
-  m_Radius: 0.95
+  m_Radius: 3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -5927,7 +5926,6 @@ MonoBehaviour:
   - {fileID: 114607826530002046}
   - {fileID: 114705009003952284}
   - {fileID: 114261664528842672}
-  enemigo: {fileID: 0}
   vidas: {fileID: 0}
   numeroEnemigos: {fileID: 0}
   sangre: {fileID: 0}
