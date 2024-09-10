@@ -14,7 +14,7 @@ public class BarraVida : MonoBehaviour
 
     private void Awake()
     {
-        // RECOSJO LA CAMARA DEL PLAYER 
+        // RECOJO LA CAMARA DEL PLAYER/FIRSTPERSONCONTOLLER
         camara = player.transform.GetChild(0).GetComponent<Camera>();
         // SLIDER QUE TIENE LA TORRETA
         slider = GetComponent<Slider>();

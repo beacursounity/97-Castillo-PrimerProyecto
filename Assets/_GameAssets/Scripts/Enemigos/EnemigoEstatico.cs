@@ -35,8 +35,7 @@ public class EnemigoEstatico: Enemigo {
 
         // RECOJO SU AUDIO PARA PODER REPRODUCIRLO
         audioTorreta = GetComponent<AudioSource>();
-        print("Nombre audio "+audioTorreta.clip.name);
-
+      
         // LO INICIALIZAMOS ASI PARA QUE AL PRINCIPIO QUE SE ACERQUE DISPARE EL E.ESTATICO
         tiempoAtaque = tiempoEntreDisparos;
 

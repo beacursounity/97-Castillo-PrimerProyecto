@@ -19,6 +19,8 @@ public class GeneradorEnemigoBoss : MonoBehaviour {
     Transform punto3;
 
     private void Awake() {
+        // RECOGER LOS PUNTOS PARA PODER GENERAR AL BOSS EN PUNTOS DISTINTOS CADA
+        // VEZ QUE EJECUTEMOS EL JUEGO 
         // RECOGER PUNTOGENBOSS1
         punto1 = GameObject.Find("PuntoGenBoss1").transform;
         // RECOGER PUNTOGENBOSS2
@@ -30,18 +32,18 @@ public class GeneradorEnemigoBoss : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        //Debug.Log("Numero Enemigos " + Enemigo.numEnemigos);
+
         // AL SER UNA VARIABLE ESTATICA Y PUBLICA DENTRO DE SU ENTORNO
         // TENDRE QUE HACERLE LA REFERENCIA A ENEMIGO.NUMENEMIGOS
         if (Enemigo.numEnemigos == 0) {
             //Debug.Log("YA NO TENGO ENEMIGOS E INSTANCIO");
 
             // RECOGER X DESDE EL PUNTO1 AL PUNTO2
-            float x = Random.Range(punto1.position.x, punto2.position.x);
-            //Debug.Log("x: "+ x);
+            float x = Random.Range(punto1.position.x, punto3.position.x);
+            Debug.Log("x: "+ x);
             // RECOGER Z DESDE PUNTO2 AL PUNTO3
             float z = Random.Range(punto2.position.z, punto3.position.z);
-            //Debug.Log("z: " + z);
+            Debug.Log("z: " + z);
             // VECTOR RESULTANTE DE LA POSICION QUE ELIJA
             Vector3 posicionBoss = new Vector3(x, transform.position.y, z);
 
@@ -50,6 +52,7 @@ public class GeneradorEnemigoBoss : MonoBehaviour {
             particulas.Play();
 
             GameObject newEnemigoBoss = Instantiate(prefabEnemigoBoss, posicionBoss, Quaternion.identity);
+
             // PARA QUE NO ME VUELVA A GENERAR MAS JEFES
             Enemigo.numEnemigos = -1;
         }

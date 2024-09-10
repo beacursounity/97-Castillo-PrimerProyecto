@@ -12,7 +12,7 @@ public class EnemigoMovil : Enemigo {
 
     void Start()
     {
-        InvokeRepeating("RotarAleatoriamente", inicioRotacion, tiempoRotacion);
+        //InvokeRepeating("RotarAleatoriamente", inicioRotacion, tiempoRotacion);
     }
 
  
@@ -34,7 +34,7 @@ public class EnemigoMovil : Enemigo {
     protected void Avanzar() {
         // SOLO SI ESTA VIVO AVANZA Y EL PLAYER TODAVIA VIVE
         if (estaVivo && Player.estaVivo) {
-           transform.Translate(Vector3.forward * Time.deltaTime * velocidad);
+           //transform.Translate(Vector3.forward * Time.deltaTime * velocidad);
         }   
     }
 
@@ -43,31 +43,35 @@ public class EnemigoMovil : Enemigo {
         //print("CHOCA CON  "+collision.gameObject.name);
         // PARA SABER EL NOMBRE CON QUIEN NO HEMOS CHOCADO
         // SI ES PLAYER LO DESTRUIMOS 
-        if (collision.gameObject.name == "Player")
+        if (collision.gameObject.name == "Player" && Player.estaVivo)
           
         {
-            // PAUSAR EL INVOKEREPEATING PARA QUE SOLO SE USE ESTA ROTACION DEL ENEMIGO
-            pausarRotarAleatoriamente = true;
-
-            // PARA QUE ROTE EN SENTIDO CONTRARIO AL QUE SE DIRIGE EL ENEMIGO
-            float rotacionNuevaY = 0f;
-
-            if (transform.rotation.y == 0f)
+            // CUANDO CHOCA CON EL ENEMIGO TONTO ESTE SE DA LA VUELTA
+            if (gameObject.name == "EnemigoTonto")
             {
-                rotacionNuevaY = -180f;
-            }
-            else rotacionNuevaY = player.transform.rotation.y * -1;
+                // PAUSAR EL INVOKEREPEATING PARA QUE SOLO SE USE ESTA ROTACION DEL ENEMIGO
+                pausarRotarAleatoriamente = true;
 
-            // MODIFICAMOS SU ROTACION  
-            transform.eulerAngles = new Vector3(transform.rotation.x, rotacionNuevaY, transform.rotation.z);
-      
+                // PARA QUE ROTE EN SENTIDO CONTRARIO AL QUE SE DIRIGE EL ENEMIGO
+                float rotacionNuevaY = 0f;
+
+                if (transform.rotation.y == 0f)
+                {
+                    rotacionNuevaY = -180f;
+                }
+                else rotacionNuevaY = player.transform.rotation.y * -1;
+
+                // MODIFICAMOS SU ROTACION  
+                transform.eulerAngles = new Vector3(transform.rotation.x, rotacionNuevaY, transform.rotation.z);
+            }
+
             // DAÑO AL PLAYER
             collision.gameObject.GetComponent<Player>().Recibirdanyo(danyoAlPlayer);
 
             // DAÑO AL ENEMIGO
             Recibirdanyo(gameObject.tag, danyoAlEnemigo);
 
-            // DEJAMOS QUE EL INVOKEREPEATING SIGA SU CURSO
+            // DEJAMOS QUE EL INVOKEREPEATING SIGA SU CURSO POR SI HA CHOCADO CON EL ENEMIGOTONTO
             pausarRotarAleatoriamente = false;
      
         }

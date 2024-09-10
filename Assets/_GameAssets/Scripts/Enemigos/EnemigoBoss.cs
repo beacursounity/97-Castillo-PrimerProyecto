@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class EnemigoBoss : EnemigoMovil {
 
-    [Header("DAÑO DEL PLAYER AL BOSS CUANDO CHOCAN")]
-    [SerializeField] int danyoAlBoss = 1;
+   // [Header("DAÑO DEL PLAYER AL BOSS CUANDO CHOCAN")]
+   // [SerializeField] int danyoAlBoss = 1;
 
     private void Start()
     {
         // EL BOSS HACE MAS DAÑO AL PLAYER
         danyoAlPlayer = 8; // que realiza a nuestro personaje
+
+        // RECOGEMOS LA VIDA MAXIMA PARA PODER HACER EL SLIDER
+        maxVidaEBoss = vidaEnemigoBoss;
     }
 
     // Update is called once per frame
@@ -38,16 +41,11 @@ public class EnemigoBoss : EnemigoMovil {
             // AVANZAMOS
             Avanzar();
         }
-        else
-        {
-            // PONEMOS EL SONIDO
-            //this.GetComponent<AudioSource>().Play();
-            Morir();
-        }
+      
     }
 
 
-    private void OnCollisionEnter(Collision collision)
+   /* private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("COLLISION ENTER BOSS");
 
@@ -77,11 +75,11 @@ public class EnemigoBoss : EnemigoMovil {
   
            
         }
-    }
+    }*/
 
     // CUANDO SIGUE DENTRO EL BOSS EN LA ZONA DE COLISION DEL PLAYER
     // LE SIGUE QUITANDO VIDAS
-    private void OnCollisionStay(Collision collision)
+   /* private void OnCollisionStay(Collision collision)
     {
         //Debug.Log("COLLISION STAY BOSS");
 
@@ -107,5 +105,5 @@ public class EnemigoBoss : EnemigoMovil {
 
 
         }
-    }
+    }*/
 }

@@ -38,7 +38,7 @@ public class Proyectil : MonoBehaviour {
     
         // LOS BUSCAMOS POR SU TAG PARA SABER CONTRA QUIEN GOLPEO
         if ( (objetivoImpacto.tag == "EnemigoListo" && objetivoImpacto.GetComponent<EnemigoListo>().vidaEnemigoListo > 0) ||
-             ( objetivoImpacto.tag == "EnemigoTonto"   &&  objetivoImpacto.GetComponent<EnemigoTonto>().vidaEnemigoTonto > 0) )
+             ( objetivoImpacto.tag == "EnemigoTonto"   &&  objetivoImpacto.GetComponent<EnemigoTonto>().vidaEnemigoTonto > 0))
         {           
 
             // INSTANCIAMOS EL PREFAB
@@ -50,7 +50,8 @@ public class Proyectil : MonoBehaviour {
             // RECOGEMOS SU COMPONENTE PARA PODER QUITAR LA VIDA DEL ENEMIGO
             objetivoImpacto.GetComponent<Enemigo>().Recibirdanyo(objetivoImpacto.tag, danyoproyectil);
 
-        } else if (objetivoImpacto.tag == "EnemigoBoss") {
+        } else if (objetivoImpacto.tag == "EnemigoBoss" &&
+                   objetivoImpacto.GetComponent<EnemigoBoss>().vidaEnemigoBoss > 0) {
 
             //Debug.Log("HA COLISIONADO CON EL ENEMIGO BOSS");
 

@@ -21,8 +21,7 @@ public class EnemigoListo : EnemigoMovil {
         Vector3 distancia = GetDistancia();
        
         // EVALUAMOS SI LA DISTANCIA ES MENOR QUE LA DISTANCIA DE ATAQUE Y ATACA
-        if (distancia.sqrMagnitude < (distanciaDeteccion * distanciaDeteccion)) {
-           // Debug.Log("HA ENTRADO");         
+        if (distancia.sqrMagnitude < (distanciaDeteccion * distanciaDeteccion)) {        
             transform.LookAt(player.transform.position);
         }
 

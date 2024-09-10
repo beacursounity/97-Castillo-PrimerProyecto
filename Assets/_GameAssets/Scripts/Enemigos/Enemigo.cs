@@ -16,7 +16,7 @@ public class Enemigo : MonoBehaviour {
     public float vidaEnemigoTonto;
     public float vidaEnemigoListo;
     public float vidaEnemigoEstatico;
-    [SerializeField] float vidaEnemigoBoss;
+    public float vidaEnemigoBoss;
     //[SerializeField] bool enPosicion = false;
 
     [SerializeField] protected int velocidad = 10; // DEL MOVIMIENTO DEL ENEMIGO MOVIL
@@ -43,7 +43,7 @@ public class Enemigo : MonoBehaviour {
     // LO PONEMOS ESTATICO Y PUBLICO PARA QUE SE PUEDA VER EN TODO EL PROYECTO 
     // PERO SOLO SEA DE ESTE SCRIPT Y NO DE SUS HIJOS YA QUE SI SON DE SUS HIJOS SERA
     // UNA VARIABLE INDEPENDIENTE A CADA UNO DE ELLOS SI SE LES PONE PROTECTED.
-    [SerializeField] public static int numEnemigos = 7;
+    public static int numEnemigos = 8;
 
     //int speed;
     //int distanciaExplosion; // 
@@ -81,6 +81,7 @@ public class Enemigo : MonoBehaviour {
         // RECOJO EL ANIMATOR QUE EN ESTE CASO NO TIENE NINGUN ANIMACION
         // PERO LUEGO LO NECESITAMOS PARA HACER ANIMACION QUE SE DESTRUYA
         animacionEnemigo = GetComponent<Animator>();
+
 
     }
 
@@ -164,6 +165,13 @@ public class Enemigo : MonoBehaviour {
         else if (tipoEnemigo == "EnemigoBoss")
         {
             vidaEnemigoBoss = vidaEnemigoBoss - danyo;
+
+            // ACTUALIZAMOS EL SLIDER
+            barraVida.ActualizarBarraVida(vidaEnemigoBoss, maxVidaEBoss);
+
+            // MANDAMOS LA POSICION DEL ARRAY QUE QUIERO REPRODUCIR Y EL VOLUMEN DEL SONIDO
+            soundManager.SeleccionAudio(2, 0.1f);
+
             if (vidaEnemigoBoss <= 0)
             {
                 vidaEnemigoBoss = 0;
@@ -213,17 +221,13 @@ public class Enemigo : MonoBehaviour {
 
         // QUITADO PARA PROBAR LA ANIMACION
         //Destroy(this.gameObject);
-        
-
-        // CUANDO DESTRUYA AL ENEMIGO BOSS TENDREMOS QUE ACABAR LA PARTIDA O CUANDO
-        // SE MUERA EL PLAYER
 
         // CUANDO NOS CARGUEMOS AL BOSS SE TERMINARA TB EL JUEGO
-        /*if (transform.tag == "EnemigoBoss") {
+        if (vidaEnemigoBoss == 0) {
             Debug.Log("ENEMIGO.MORIR: VAMOS A CARGARNOS A NUESTRO BOSS");
             // LLAMAMOS A LA ESCENA DE INICIO DEL JUEGO
             SceneManager.LoadScene(0);
-        }*/
+        }
 
     }
 
